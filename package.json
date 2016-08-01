@@ -1,0 +1,19 @@
+{
+  "name": "kessel",
+  "description": "Express boilerplate generator",
+  "version": "0.0.0",
+  "scripts": {},
+  "author": "Florian Sterneder <florian@sterneder.net> (http://sterneder.net)",
+  "license": "MIT",
+  "dependencies": {
+    "dashdash": "^1.14.0"
+  },
+  "main": "bin/express",
+  "preferGlobal": true,
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "bin": {
+    "kessel": "./bin/kessel"
+  }
+}
