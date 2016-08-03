@@ -1,7 +1,7 @@
+#!/usr/bin/env node
 (()=>('use strict'));
 
-#!/usr/bin/env node
-
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const dashdash = require('dashdash');
@@ -28,16 +28,17 @@ try{
   printHelp()
 }
 
+// start
 if(!opts.help && !opts.version){
-  main();
-} else{
+  main(opts.directory);
+} else {
   if(opts.version && !opts.help){console.log(pkg.version)}
   else(printHelp());
 }
 
 // Main function
-function main(){
-  
+function main(userPath){
+  console.log(userPath);
 }
 
 // helper function which reads from the template dir
@@ -47,19 +48,13 @@ function readTemplate(name){
 
 // helper function which writes a file
 function writeTemplate(pathInput,content){
-  fs.writeFileSync(pathResolver(pathInput),content,{mode:0o644});
+  fs.writeFileSync(pathInput,content,{mode:0o644});
   return 'finished writing ' + pathInput;
 }
 
 // create a directory
 function mkdir(pathInput){
-  fs.mkdir(pathResolver(pathInput),0o644);
-}
-
-// helps with path resolution in particualr the tilde(~) case
-function pathResolver(pathInput){
-  if(!path.isAbsolute(pathInput)){
-  }
+  fs.mkdir(pathInput,0o644);
 }
 
 function printHelp(){
