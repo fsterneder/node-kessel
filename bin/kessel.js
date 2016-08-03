@@ -1,3 +1,5 @@
+(()=>('use strict'));
+
 #!/usr/bin/env node
 
 const fs = require('fs');
@@ -18,6 +20,7 @@ const options = [
 
 let parser = dashdash.createParser({options:options});
 
+// parses the options and looks for possible bad input
 try{
   var opts = parser.parse(process.argv);
 } catch(e){
@@ -32,21 +35,31 @@ if(!opts.help && !opts.version){
   else(printHelp());
 }
 
+// Main function
 function main(){
   
 }
 
+// helper function which reads from the template dir
 function readTemplate(name){
   return fs.readFileSync(path.join(__dirname + '/../templates/' + name),'utf-8');
 }
 
-function writeTemplate(relPath,content){
-  fs.writeFileSync(path.resolve(relPath),content,{mode:0o644});
-  return 'finished writing ' + relPath;
+// helper function which writes a file
+function writeTemplate(pathInput,content){
+  fs.writeFileSync(pathResolver(pathInput),content,{mode:0o644});
+  return 'finished writing ' + pathInput;
 }
 
-function mkdir(relPath){
-  fs.mkdir(path.resolve(relPath),0o644);
+// create a directory
+function mkdir(pathInput){
+  fs.mkdir(pathResolver(pathInput),0o644);
+}
+
+// helps with path resolution in particualr the tilde(~) case
+function pathResolver(pathInput){
+  if(!path.isAbsolute(pathInput)){
+  }
 }
 
 function printHelp(){
