@@ -5,7 +5,9 @@ var app = require('../app.js');
 var http = require('http');
 var input = require('process').argv.splice(2);
 
-var port = checkValidPort(Number.parseInt(input[0]));
+var port = Number.parseInt(input[0]) || '3000';
+
+checkValidPort(port);
 
 app.set('port',port);
 

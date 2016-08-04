@@ -8,14 +8,14 @@ const dashdash = require('dashdash');
 const pkg = require('../package.json');
 
 const options = [
-  { names:['help','h'], type:'bool', help:'prints the usage and exits' },
-  { names:['version','V'], type:'bool', help:'prints the version and exits' },
+  { names:['help','h'], type:'bool', help:'print the usage and exits' },
+  { names:['version','V'], type:'bool', help:'print the version and exits' },
   { names:['verbose','v'], type:'bool', help:'explain what is being done' },
-  { names:['directory','d'], type:'string', help:'defines the target directory', helpArg: 'PATH' },
+  { names:['directory','d'], type:'string', help:'define the target directory', helpArg: 'PATH' },
   { names:['pug','p'], type:'bool', help:'add pug (jade) templating support', default: true },
   { names:['ejs','e'], type:'bool', help:'add ejs templating support' },
-  { name:'minimal', type:'bool', help:'creates a application with a minimal footprint' },
-  { name:"no-git", type:'bool', help:'doesn\'t create a .gitignore' }
+  { name:'minimal', type:'bool', help:'create a application with a minimal footprint' },
+  { name:"no-git", type:'bool', help:'no .gitignore' }
 ];
 
 let parser = dashdash.createParser({options:options});
@@ -56,7 +56,6 @@ function buildTemplate(userPath){
     var appjs = readTemplate('min.js');
     var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node '+dirName},dependencies: {
       'express':'^4.14.0'}};
-    writeTemplate(userPath, dirName + '.js', appjs);
   } else{
     var appjs = readTemplate('app.js');
     var binsrv = readTemplate('binsrv.js');
@@ -64,7 +63,6 @@ function buildTemplate(userPath){
     var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node ./bin/'+dirName},dependencies: {
       'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}};
     mkdir(userPath,'bin');
-    writeTemplate(userPath,'apps.js',appjs);
     writeTemplate(userPath,'/bin/'+dirName+'.js',binsrv);
     writeTemplate(userPath,'controller.js',ctrljs);
   }
@@ -77,17 +75,23 @@ function buildTemplate(userPath){
   mkdir(userPath,'views');
   
   if(opts.ejs){
-    appjs = appjs.replace('<view>','ejs');
+    appjs = appjs.replace(/<view>/g,'ejs');
     pkg.dependencies['ejs'] = "^2.5.1";
     let ejsIndex = ('ejs/index.ejs');
     writeTemplate(userPath,'views/index.ejs',ejsIndex);
   } else {
-    pkg.dependencies['pug'] = '^2.0.0';
+    pkg.dependencies['pug'] = '^2.0.0-beta4';
     appjs = appjs.replace(/<view>/g,'pug');
     let pugIndex = readTemplate('pug/index.pug');
     let pugLayout = readTemplate('pug/layout.pug');
     writeTemplate(userPath,'views/index.pug',pugIndex);
     writeTemplate(userPath,'views/layout.pug',pugLayout);
+  }
+  
+  if(opts.minimal){
+    writeTemplate(userPath, dirName + '.js', appjs);
+  } else {
+    writeTemplate(userPath,'apps.js',appjs);
   }
 
   //copy files
