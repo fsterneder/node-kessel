@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /** Module dependencies **/
-var app = require('./app.js');
+var app = require('../app.js');
 var http = require('http');
 var input = require('process').argv.splice(2);
 

@@ -10,11 +10,11 @@ const pkg = require('../package.json');
 const options = [
   { names:['help','h'], type:'bool', help:'prints the usage and exits' },
   { names:['version','V'], type:'bool', help:'prints the version and exits' },
+  { names:['verbose','v'], type:'bool', help:'explain what is being done' },
   { names:['directory','d'], type:'string', help:'defines the target directory', helpArg: 'PATH' },
-  { names:['blade','b'], type:'bool', help:'add blade templating support' },
+  { names:['pug','p'], type:'bool', help:'add pug (jade) templating support', default: true },
   { names:['ejs','e'], type:'bool', help:'add ejs templating support' },
-  { names:['jade','j'], type:'bool', help:'add jade templating support', default: true },
-  { names:['minimal','m'], type:'bool', help:'creates a application with a minimal footprint' },
+  { name:'minimal', type:'bool', help:'creates a application with a minimal footprint' },
   { name:"no-git", type:'bool', help:'doesn\'t create a .gitignore' }
 ];
 
@@ -28,18 +28,74 @@ try{
   printHelp()
 }
 
-// start
+// *** start ***
 if(!opts.help && !opts.version){
-  main(opts.directory);
-} else {
-  if(opts.version && !opts.help){console.log(pkg.version)}
-  else(printHelp());
+  try{
+    let _path = opts.directory || path.resolve();
+    main(fs.realpathSync(_path));
+  } catch(e){
+    console.log('ERROR %s', e)
+  }
+} 
+else {
+  if(opts.version && !opts.help){
+    console.log(pkg.version)
+  } else printHelp();
 }
 
 // Main function
 function main(userPath){
-  console.log(userPath);
+  buildTemplate(userPath);
 }
+
+// copys files and create dirs
+function buildTemplate(userPath){
+  let dirName = path.parse(userPath).name;
+  // read template files
+  if(opts.minimal){
+    var appjs = readTemplate('min.js');
+    var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node '+dirName},dependencies: {
+      'express':'^4.14.0'}};
+    writeTemplate(userPath, dirName + '.js', appjs);
+  } else{
+    var appjs = readTemplate('app.js');
+    var binsrv = readTemplate('binsrv.js');
+    var ctrljs = readTemplate('controller.js');
+    var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node ./bin/'+dirName},dependencies: {
+      'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}};
+    mkdir(userPath,'bin');
+    writeTemplate(userPath,'apps.js',appjs);
+    writeTemplate(userPath,'/bin/'+dirName+'.js',binsrv);
+    writeTemplate(userPath,'controller.js',ctrljs);
+  }
+
+  let cssf = readTemplate('kessel.css');
+
+  // make dirs
+  mkdir(userPath,'public');
+  mkdir(userPath,'public/css');
+  mkdir(userPath,'views');
+  
+  if(opts.ejs){
+    appjs = appjs.replace('<view>','ejs');
+    pkg.dependencies['ejs'] = "^2.5.1";
+    let ejsIndex = ('ejs/index.ejs');
+    writeTemplate(userPath,'views/index.ejs',ejsIndex);
+  } else {
+    pkg.dependencies['pug'] = '^2.0.0';
+    appjs = appjs.replace(/<view>/g,'pug');
+    let pugIndex = readTemplate('pug/index.pug');
+    let pugLayout = readTemplate('pug/layout.pug');
+    writeTemplate(userPath,'views/index.pug',pugIndex);
+    writeTemplate(userPath,'views/layout.pug',pugLayout);
+  }
+
+  //copy files
+  writeTemplate(userPath,'package.json',JSON.stringify(pkg, null, 2) + '\n');
+  writeTemplate(userPath,'/public/css/kessel.css',cssf);
+
+}
+
 
 // helper function which reads from the template dir
 function readTemplate(name){
@@ -47,16 +103,19 @@ function readTemplate(name){
 }
 
 // helper function which writes a file
-function writeTemplate(pathInput,content){
-  fs.writeFileSync(pathInput,content,{mode:0o644});
-  return 'finished writing ' + pathInput;
+function writeTemplate(pathInput,filename, content){
+  fs.writeFileSync(path.join(pathInput,filename),content,{mode:Number.parseInt(0755)});
+  if(opts.verbose){
+    console.log('write: ' + path.join(pathInput,filename));
+  }
 }
 
 // create a directory
-function mkdir(pathInput){
-  fs.mkdir(pathInput,0o644);
+function mkdir(pathInput,newDir){
+  fs.mkdirSync(path.join(pathInput,newDir),Number.parseInt(0755));
 }
 
+// help function
 function printHelp(){
   var help = parser.help({includeEnv: true,indent:2,includeDefault:true}).trimRight();
   console.log('usage: kessel [options]\n' + help);
