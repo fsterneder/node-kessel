@@ -97,7 +97,11 @@ function buildTemplate(userPath){
   //copy files
   writeTemplate(userPath,'package.json',JSON.stringify(pkg, null, 2) + '\n');
   writeTemplate(userPath,'/public/css/kessel.css',cssf);
-
+  
+  if(!opts.no_git){
+    let gitign = readTemplate('gitignore');
+    writeTemplate(userPath,'.gitignore',gitign);
+  }
 }
 
 
@@ -116,7 +120,11 @@ function writeTemplate(pathInput,filename, content){
 
 // create a directory
 function mkdir(pathInput,newDir){
-  fs.mkdirSync(path.join(pathInput,newDir),Number.parseInt(0755));
+  try{
+    fs.mkdirSync(path.join(pathInput,newDir),Number.parseInt(0755));
+  } catch(e) {
+    e.code === "EEXIST" ? null : console.log(e); 
+  }
 }
 
 // help function
