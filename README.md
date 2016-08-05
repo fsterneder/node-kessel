@@ -3,7 +3,7 @@ A application/boilerplate generator for Express which was inspired by [express-g
 ## Install
 
 ```sh
-% npm -g install kessel
+$ npm -g install kessel
 ```
 
 ## Usage
@@ -11,13 +11,13 @@ A application/boilerplate generator for Express which was inspired by [express-g
 Create the app:
 
 ```sh
-% kessel /tmp/foo && cd /tmp/foo
+$ kessel /tmp/foo && cd /tmp/foo
 ```
 
 Install dependencies:
 
 ```sh
-% npm install
+$ npm install
 ```
 
 Last step:
