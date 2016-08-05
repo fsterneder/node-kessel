@@ -5,7 +5,7 @@ const ctrl = require('./controller');
 const app = express();
 
 app.set('views',__dirname + '/views');
-app.set('view engine', '<view>');
+app.set('view engine', '>view<');
 
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/public'));

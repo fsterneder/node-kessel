@@ -12,6 +12,7 @@ const options = [
   { names:['version','V'], type:'bool', help:'print the version and exits' },
   { names:['verbose','v'], type:'bool', help:'explain what is being done' },
   { names:['directory','d'], type:'string', help:'define the target directory', helpArg: 'PATH' },
+  { names:['name','n'], type:'string', help:'define the name of the application', helpArg: 'STR' },
   { names:['pug','p'], type:'bool', help:'add pug (jade) templating support', default: true },
   { names:['ejs','e'], type:'bool', help:'add ejs templating support' },
   { name:'minimal', type:'bool', help:'create a application with a minimal footprint' },
@@ -50,7 +51,11 @@ function main(userPath){
 
 // copys files and create dirs
 function buildTemplate(userPath){
-  let dirName = path.parse(userPath).name;
+  if(opts.name){
+    var dirName = (opts.name).toString();
+  } else {
+    var dirName = path.parse(userPath).name;
+  }
   // read template files
   if(opts.minimal){
     var appjs = readTemplate('min.js');
@@ -63,11 +68,12 @@ function buildTemplate(userPath){
     var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node ./bin/'+dirName},dependencies: {
       'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}};
     mkdir(userPath,'bin');
+    ctrljs = ctrljs.replace(/>name</g,dirName);
     writeTemplate(userPath,'/bin/'+dirName+'.js',binsrv);
     writeTemplate(userPath,'controller.js',ctrljs);
   }
 
-  let cssf = readTemplate('kessel.css');
+  let cssf = readTemplate('main.css');
 
   // make dirs
   mkdir(userPath,'public');
@@ -75,28 +81,30 @@ function buildTemplate(userPath){
   mkdir(userPath,'views');
   
   if(opts.ejs){
-    appjs = appjs.replace(/<view>/g,'ejs');
+    appjs = appjs.replace(/>view</g,'ejs');
     pkg.dependencies['ejs'] = "^2.5.1";
-    let ejsIndex = ('ejs/index.ejs');
+    let ejsIndex = readTemplate('ejs/index.ejs');
     writeTemplate(userPath,'views/index.ejs',ejsIndex);
   } else {
     pkg.dependencies['pug'] = '^2.0.0-beta4';
-    appjs = appjs.replace(/<view>/g,'pug');
+    appjs = appjs.replace(/>view</g,'pug');
     let pugIndex = readTemplate('pug/index.pug');
     let pugLayout = readTemplate('pug/layout.pug');
+    pugLayout = pugLayout.replace(/>title</,dirName);
     writeTemplate(userPath,'views/index.pug',pugIndex);
     writeTemplate(userPath,'views/layout.pug',pugLayout);
   }
   
   if(opts.minimal){
+    appjs = appjs.replace(/>name</g,dirName);
     writeTemplate(userPath, dirName + '.js', appjs);
   } else {
-    writeTemplate(userPath,'apps.js',appjs);
+    writeTemplate(userPath,'app.js',appjs);
   }
 
   //copy files
   writeTemplate(userPath,'package.json',JSON.stringify(pkg, null, 2) + '\n');
-  writeTemplate(userPath,'/public/css/kessel.css',cssf);
+  writeTemplate(userPath,'/public/css/main.css',cssf);
   
   if(!opts.no_git){
     let gitign = readTemplate('gitignore');

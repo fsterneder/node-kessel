@@ -5,12 +5,12 @@ const input = require('process').argv.splice(2);
 const app = express();
 
 app.set('views',__dirname + '/views');
-app.set('view engine', '<view>');
+app.set('view engine', '>view<');
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/',function(req,res,next){
-  res.render('index');
+  res.render('index',{name:'>name<'});
 });
 
 let __port = Number.parseInt(input[0]) || '3000';
