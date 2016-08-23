@@ -20,10 +20,10 @@ Install dependencies:
 $ npm install
 ```
 
-Last step:
+Last step to start the application at port 4004:
 
 ```sh
-$ npm start
+$ npm start -- 4004
 ```
 
 ## Command Line Options
@@ -40,6 +40,14 @@ This generator can also be further configured with the following command line fl
   --minimal                  create a application with a minimal footprint.
   --no-git                   no .gitignore.
 
+## Environment Variables
+
+The following Environment Variables are aviable at the moment:
+
+**KESSEL_AUTHOR** (STRING)      Sets the author in the applications package.json file 
+**KESSEL_PRIVATE** (BOOLEAN)    A environment variable which gives you the option to set your projects to private
+**KESSEL_LICENCE** (STRING)     Define the licence for the package.json file
+
 ## License
 
 [MIT](LICENSE)
@@ -48,5 +56,4 @@ This generator can also be further configured with the following command line fl
 
 Things that I might want to add later:
 
-- Environment variable support
 - CSS pre-processor

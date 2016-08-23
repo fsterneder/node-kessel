@@ -4,15 +4,19 @@ const input = require('process').argv.splice(2);
 
 const app = express();
 
+// view engine
 app.set('views',__dirname + '/views');
 app.set('view engine', '>view<');
 
+// app use
 app.use(express.static(__dirname + '/public'));
 
+// routes
 app.get('/',function(req,res,next){
   res.render('index',{name:'>name<'});
 });
 
+// http server
 let __port = Number.parseInt(input[0]) || '3000';
 checkValidPort(__port);
 app.set('port',__port);

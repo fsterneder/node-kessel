@@ -1,17 +1,17 @@
 {
   "name": "kessel",
   "description": "Express template generator",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "scripts": {},
   "author": "Florian Sterneder <florian@sterneder.net> (http://sterneder.net)",
   "license": "MIT",
   "dependencies": {
     "dashdash": "^1.14.0"
   },
-  "main": "bin/express",
+  "main": "bin/kessel",
   "preferGlobal": true,
   "engines": {
-    "node": ">= 0.10"
+    "node": ">= 0.14"
   },
   "bin": {
     "kessel": "./bin/kessel"

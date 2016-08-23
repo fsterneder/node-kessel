@@ -15,6 +15,9 @@ const options = [
   { names:['name','n'], type:'string', help:'define the name of the application', helpArg: 'STR' },
   { names:['pug','p'], type:'bool', help:'add pug (jade) templating support', default: true },
   { names:['ejs','e'], type:'bool', help:'add ejs templating support' },
+  { name:'author', type:'string', env: 'KESSEL_AUTHOR', help:'specifiy the author of the project', helpArg: 'STR'},
+  { name:'licence', type:'string', env: 'KESSEL_LICENCE', help:'specifiy the licence of the project', helpArg: 'STR'},
+  { name:'private', type:'bool', env: 'KESSEL_PRIVATE', help:'specifies if the application should be flagged as private', default: false},
   { name:'minimal', type:'bool', help:'create a application with a minimal footprint' },
   { name:"no-git", type:'bool', help:'no .gitignore' }
 ];
@@ -56,17 +59,25 @@ function buildTemplate(userPath){
   } else {
     var dirName = path.parse(userPath).name;
   }
+
+  // package.json - diff: script start, depend
+  var pkg = { name: dirName, version: '0.0.0', dependencies: {'express':'^4.14.0'}};
+  debugger;
+  if(opts.author){pkg.author = opts.author}
+  if(opts.licence){pkg.licence = opts.licence}
+  if(opts.private){pkg.private = true}
+
   // read template files
   if(opts.minimal){
     var appjs = readTemplate('min.js');
-    var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node '+dirName},dependencies: {
-      'express':'^4.14.0'}};
-  } else{
+    pkg.scripts = {'start': 'node '+dirName}
+  } else {
     var appjs = readTemplate('app.js');
     var binsrv = readTemplate('binsrv.js');
     var ctrljs = readTemplate('controller.js');
-    var pkg = { name: dirName, version: '0.0.0', private: true , scripts: {start: 'node ./bin/'+dirName},dependencies: {
-      'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}};
+    pkg.scripts = {'start': 'node ./bin/'+dirName}, 
+    pkg.dependencies = {'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}
+
     mkdir(userPath,'bin');
     ctrljs = ctrljs.replace(/>name</g,dirName);
     writeTemplate(userPath,'/bin/'+dirName+'.js',binsrv);
@@ -111,7 +122,6 @@ function buildTemplate(userPath){
     writeTemplate(userPath,'.gitignore',gitign);
   }
 }
-
 
 // helper function which reads from the template dir
 function readTemplate(name){
