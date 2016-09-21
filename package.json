@@ -1,7 +1,7 @@
 {
   "name": "kessel",
-  "description": "Express template generator",
-  "version": "0.2.1",
+  "description": "Express/Hapi template generator",
+  "version": "0.3.2",
   "scripts": {},
   "author": "Florian Sterneder <florian@sterneder.net> (http://sterneder.net)",
   "license": "MIT",
@@ -11,9 +11,15 @@
   "main": "bin/kessel",
   "preferGlobal": true,
   "engines": {
-    "node": ">= 0.14"
+    "node": ">= 1.00"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fsterneder/node-kessel"
   },
   "bin": {
-    "kessel": "./bin/kessel"
+    "kessel": "./bin/kessel",
+    "kessel-expr": "./bin/kessel-expr",
+    "kessel-hapi": "./bin/kessel-hapi"
   }
 }

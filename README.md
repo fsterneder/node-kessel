@@ -1,4 +1,4 @@
-A application/boilerplate generator for Express which was inspired by [express-generator](https://github.com/expressjs/generator)
+A application/boilerplate generator for Express.js and Hapi.js which was inspired by [express-generator](https://github.com/expressjs/generator)
 
 ## Install
 
@@ -30,6 +30,7 @@ $ npm start -- 4004
 
 This generator can also be further configured with the following command line flags.
 
+```sh
   -h, --help                 print the usage and exits.
   -V, --version              print the version and exits.
   -v, --verbose              explain what is being done.
@@ -37,16 +38,23 @@ This generator can also be further configured with the following command line fl
   -n STR, --name=STR         define the name of the application.
   -p, --pug                  add pug (jade) templating support. Default: true
   -e, --ejs                  add ejs templating support.
+  -h, --handlebars           add handlebar templating support.
   --minimal                  create a application with a minimal footprint.
   --no-git                   no .gitignore.
+```
 
 ## Environment Variables
 
 The following Environment Variables are aviable at the moment:
 
-**KESSEL_AUTHOR** (STRING)      Sets the author in the applications package.json file 
-**KESSEL_PRIVATE** (BOOLEAN)    A environment variable which gives you the option to set your projects to private
-**KESSEL_LICENCE** (STRING)     Define the licence for the package.json file
+##### **KESSEL_AUTHOR** (String) 
+Sets the author in the applications package.json file
+
+##### **KESSEL_PRIVATE** (Boolean)
+A environment variable which gives you the option to set your projects to private
+
+##### **KESSEL_LICENCE** (String)
+Define the licence for the package.json file
 
 ## License
 
