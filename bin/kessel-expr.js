@@ -6,11 +6,15 @@ const dashdash = require('dashdash')
 
 const pkg = require('../package.json')
 const __opts = require('./kessel').options
-
-const options = __opts 
+const helpr = require('../lib/helpr')
 
 let parser = dashdash.createParser({options:options})
 
+const options = __opts 
+const printHelp = helpr.printHelp.bind(null,parser)
+const readTemplate = helpr.readTemplate
+const mkdir = helpr.mkdir
+  
 // parses the options and looks for possible bad input
 try{
   var opts = parser.parse(process.argv);
@@ -21,7 +25,7 @@ try{
 
 // *** start ***
 if(!opts.help && !opts.version){
-  try{
+  try {
     let _path = opts.directory || path.resolve()
     main(fs.realpathSync(_path))
   } catch(e){
@@ -47,6 +51,9 @@ function buildTemplate(userPath){
     var dirName = path.parse(userPath).name
   }
 
+  // verbose settings for writeTemplate Function
+  const writeTemplate = helpr.writeTemplate.bind(null,opts.verbose)
+
   // package.json - diff: script start, depend
   var pkg = { name: dirName, version: '0.0.0', dependencies: {'express':'^4.14.0'}}
   debugger
@@ -60,7 +67,7 @@ function buildTemplate(userPath){
     pkg.scripts = {'start': 'node '+dirName+'.js'}
   } else {
     var appjs = readTemplate('app.js')
-    var binsrv = readTemplate('binsrv.js')
+    var binsrv = readTemplate('binsrv-expr.js')
     var ctrljs = readTemplate('controller-expr.js')
     pkg.scripts = {'start': 'node ./bin/'+dirName}, 
     pkg.dependencies = {'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}
@@ -115,33 +122,4 @@ function buildTemplate(userPath){
     let gitign = readTemplate('gitignore')
     writeTemplate(userPath,'.gitignore',gitign)
   }
-}
-
-// helper function which reads from the template dir
-function readTemplate(name){
-  return fs.readFileSync(path.join(__dirname + '/../templates/' + name),'utf-8')
-}
-
-// helper function which writes a file
-function writeTemplate(pathInput,filename, content){
-  fs.writeFileSync(path.join(pathInput,filename),content,{mode:Number.parseInt(0755)})
-  if(opts.verbose){
-    console.log('write: ' + path.join(pathInput,filename))
-  }
-}
-
-// create a directory
-function mkdir(pathInput,newDir){
-  try{
-    fs.mkdirSync(path.join(pathInput,newDir),Number.parseInt(0755))
-  } catch(e) {
-    e.code === "EEXIST" ? null : console.log(e)
-  }
-}
-
-// help function
-function printHelp(){
-  var help = parser.help({includeEnv: true,indent:2,includeDefault:true}).trimRight()
-  console.log('usage: kessel [options]\n' + help)
-  process.exit(0)
 }
