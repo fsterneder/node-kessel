@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const dashdash = require('dashdash')
+
 const pkg = require('../package.json')
 const __opts = require('./kessel').options
 
@@ -55,12 +56,12 @@ function buildTemplate(userPath){
 
   // read template files
   if(opts.minimal){
-    var appjs = readTemplate('min.js');
-    pkg.scripts = {'start': 'node '+dirName}
+    var appjs = readTemplate('min-expr.js');
+    pkg.scripts = {'start': 'node '+dirName+'.js'}
   } else {
     var appjs = readTemplate('app.js')
     var binsrv = readTemplate('binsrv.js')
-    var ctrljs = readTemplate('controller.js')
+    var ctrljs = readTemplate('controller-expr.js')
     pkg.scripts = {'start': 'node ./bin/'+dirName}, 
     pkg.dependencies = {'express':'^4.14.0','body-parser':'^1.15.2','cookie-parser':'^1.4.3','morgan': '^1.7.0'}
 
@@ -88,7 +89,7 @@ function buildTemplate(userPath){
     let hbsIndex = readTemplate('hbs/index.hbs')
     let hbsLayout = readTemplate('hbs/layout.hbs')
     writeTemplate(userPath,'views/index.hbs', hbsIndex)
-    writeTemplate(userPath,'views/layout.hbs', hbsIndex)
+    writeTemplate(userPath,'views/layout.hbs', hbsLayout)
   } else {
     pkg.dependencies['pug'] = '^2.0.0-beta4'
     appjs = appjs.replace(/>view</g,'pug')

@@ -12,7 +12,7 @@ const options = [
   { names:['directory','d'], type:'string', help:'define the target directory', helpArg: 'PATH' },
   { names:['name','n'], type:'string', help:'define the name of the application', helpArg: 'STR' },
   { names:['pug','p'], type:'bool', help:'add Pug (Jade) templating support', default: true },
-  { names:['hbs','H'], type:'bool', help:'add Handlebars templating support', default: true },
+  { names:['hbs','H'], type:'bool', help:'add Handlebars templating support'},
   { names:['ejs','e'], type:'bool', help:'add Embedded JavaScript templating support' },
   { name:'author', type:'string', env: 'KESSEL_AUTHOR', help:'specifiy the author of the project', helpArg: 'STR'},
   { name:'licence', type:'string', env: 'KESSEL_LICENCE', help:'specifiy the licence of the project', helpArg: 'STR'},
