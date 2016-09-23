@@ -36,8 +36,11 @@ This generator can also be further configured with the following command line fl
   -v, --verbose              explain what is being done.
   -d PATH, --directory=PATH  define the target directory.
   -n STR, --name=STR         define the name of the application.
-  -p, --pug                  add pug (jade) templating support. Default: true
-  -e, --ejs                  add ejs templating support.
+  -E, --express              Express framework.
+  -H, --hapi                 Hapi.js framework. Default: true
+  -p, --pug                  add Pug (Jade) templating support. Default: true
+  --hbs                      add Handlebars templating support.
+  -e, --ejs                  add Embedded JavaScript templating support.
   --author=STR               specifiy the author of the project. Environment:
                              KESSEL_AUTHOR=STR
   --licence=STR              specifiy the licence of the project. Environment:
