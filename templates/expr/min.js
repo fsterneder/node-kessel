@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const input = require('process').argv.splice(2);
+const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
 
 const app = express();
 
@@ -17,16 +17,14 @@ app.get('/',function(req,res,next){
 });
 
 // http server
-let __port = Number.parseInt(input[0]) || '3000';
-checkValidPort(__port);
-app.set('port',__port);
+app.set('port',_port_);
 
 app.listen(__port);
 
 function checkValidPort(port){
   if(port < 1024 || port > 65535 || Number.isNaN(port)){
-    console.log('invalid port');
-    process.exit(1);
+    console.log('invalid port - defaults to 3000');
+    return false;
   }
   return port;
 }

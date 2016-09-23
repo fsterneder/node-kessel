@@ -105,7 +105,6 @@ function buildTemplate(userPath){
       pkg.dependencies = {'hapi':'^15.0.3','vision':'^4.1.0','inert':'^4.0.2'}
 
       ctrljs = ctrljs.replace(/>name</g,dirName)
-      writeTemplate(userPath,'/bin/'+dirName+'.js',binsrv)
       writeTemplate(userPath,'controller.js',ctrljs)
     }
   }
@@ -123,12 +122,16 @@ function buildTemplate(userPath){
     let ejsIndex = readTemplate('ejs/index.ejs')
     writeTemplate(userPath,'views/index.ejs', ejsIndex)
   } else if(opts.hbs){
-    pkg.dependencies['hbs'] = "^4.0.1"
-    appjs = appjs.replace(/>view</g,'hbs')
-    let hbsIndex = readTemplate('hbs/index.hbs')
-    let hbsLayout = readTemplate('hbs/layout.hbs')
-    writeTemplate(userPath,'views/index.hbs', hbsIndex)
-    writeTemplate(userPath,'views/layout.hbs', hbsLayout)
+    if(opts.express){
+      pkg.dependencies['hbs'] = "^4.0.1"
+      appjs = appjs.replace(/>view</g,'hbs')
+      let hbsIndex = readTemplate('hbs/index.hbs')
+      let hbsLayout = readTemplate('hbs/layout.hbs')
+      writeTemplate(userPath,'views/index.hbs', hbsIndex)
+      writeTemplate(userPath,'views/layout.hbs', hbsLayout)
+    } else {
+      throw new Error('not possible')
+    }
   } else {
     pkg.dependencies['pug'] = '^2.0.0-beta4'
     appjs = appjs.replace(/>view</g,'pug')
@@ -143,7 +146,8 @@ function buildTemplate(userPath){
     appjs = appjs.replace(/>name</g,dirName)
     writeTemplate(userPath, dirName + '.js', appjs)
   } else {
-    writeTemplate(userPath,'app.js',appjs)
+    if(opts.express){writeTemplate(userPath,'app.js',appjs)}
+    else {writeTemplate(userPath,'/'+dirName+'.js',appjs)}
   }
 
   //copy files

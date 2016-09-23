@@ -4,7 +4,7 @@
 const Hapi = require('hapi');
 const server = new Hapi.Server();
 
-const port = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
+const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
 
 // Pug View Engine
 server.register(require('vision'),(e) => {
@@ -15,7 +15,7 @@ server.register(require('vision'),(e) => {
 })
 server.register(require('inert'),(e) => {if(e){throw e}});
 
-server.connection({port: port});
+server.connection({_port_: port});
 
 /* ROUTES */
 // Public static directory serving
