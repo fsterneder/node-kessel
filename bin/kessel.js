@@ -100,11 +100,13 @@ function buildTemplate(userPath){
     } else {
       var appjs = readTemplate('/hapi/app.js')
       var ctrljs = readTemplate('/hapi/controller.js')
+      var routesjs = readTemplate('/hapi/routes.js')
       pkg.scripts = {'start': 'node ./'+dirName+'.js'}, 
       pkg.dependencies = {'hapi':'^15.0.3','vision':'^4.1.0','inert':'^4.0.2'}
 
       ctrljs = ctrljs.replace(/>name</g,dirName)
       writeTemplate(userPath,'controller.js',ctrljs)
+      writeTemplate(userPath,'routes.js',routesjs)
     }
   }
 

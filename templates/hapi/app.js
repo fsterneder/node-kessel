@@ -5,45 +5,32 @@ const Hapi = require('hapi');
 const server = new Hapi.Server();
 
 const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
-const ctrl = require('./controller');
-
-// View Engine
-server.register(require('vision'),(e) => {
-  server.views({
-    engines: {>view<: require('>view<')},
-    path: __dirname + '/views'
-  });
-});
-server.register(require('inert'),(e) => {if(e){throw e}});
 
 server.connection({port: _port_});
 
-/* ROUTES */
-// Public static directory serving
-server.route({
-  method: 'GET',
-  path: '/{p*}',
-  handler: {
-    directory: {
-      path: __dirname + '/public',
-      listing: false
-    }
-  }
-});
-// Index
-server.route({
-  method:'GET',
-  path:'/',
-  handler: ctrl.index
-});
+// Static Serving
+server.register(require('inert'),(e) => {if(e){throw e;}})
 
-server.start((e) => console.log(`Server running at: ${server.info.uri}`));
+server.register(require('vision'),(e) => {
+	// View Engine
+	server.views({
+		engines: {>view<: require('>view<')},
+		path: __dirname + '/views'
+	});
+	// Routes
+	server.route(require('./routes'));
+	// Server start
+	server.start((e) => {
+		if (e) {throw e;}
+		console.log('Started server at', server.info.uri);
+	});
+});
 
 // Valid Port Check
 function checkValidPort(port){
-  if(port < 1024 || port > 65535 || Number.isNaN(port)){
-    console.log('invalid port - defaults to 3000');
-    return false;
-  }
-  return port;
+	if(port < 1024 || port > 65535 || Number.isNaN(port)){
+		console.log('invalid port - defaults to 3000');
+		return false;
+	}
+	return port;
 }

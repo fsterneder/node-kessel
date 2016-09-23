@@ -10,9 +10,9 @@ app.set('port',_port_);
 app.listen(_port_);
 
 function checkValidPort(port){
-  if(port < 1024 || port > 65535 || Number.isNaN(port)){
-    console.log('invalid port - defaults to 3000');
-    return false;
-  }
-  return port;
+	if(port < 1024 || port > 65535 || Number.isNaN(port)){
+		console.log('invalid port - defaults to 3000');
+		return false;
+	}
+	return port;
 }
