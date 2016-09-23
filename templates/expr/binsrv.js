@@ -6,11 +6,8 @@ var http = require('http');
 
 const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
 
-checkValidPort(port);
-
 app.set('port',_port_);
-
-app.listen(port);
+app.listen(_port_);
 
 function checkValidPort(port){
   if(port < 1024 || port > 65535 || Number.isNaN(port)){

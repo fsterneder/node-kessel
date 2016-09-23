@@ -15,7 +15,7 @@ server.register(require('vision'),(e) => {
 })
 server.register(require('inert'),(e) => {if(e){throw e}});
 
-server.connection({_port_: port});
+server.connection({port: _port_});
 
 /* ROUTES */
 // Public static directory serving
@@ -36,7 +36,7 @@ server.route({
   handler: function(res,reply){
     reply.view('index',{name: '>name<'});
   }
-})
+});
 
 server.start((e) => console.log(`Server running at: ${server.info.uri}`));
 

@@ -11,7 +11,7 @@ $ npm -g install kessel
 Create the app:
 
 ```sh
-$ kessel /tmp/foo && cd /tmp/foo
+$ kessel -d /tmp/foo && cd /tmp/foo
 ```
 
 Install dependencies:
@@ -38,7 +38,13 @@ This generator can also be further configured with the following command line fl
   -n STR, --name=STR         define the name of the application.
   -p, --pug                  add pug (jade) templating support. Default: true
   -e, --ejs                  add ejs templating support.
-  -h, --handlebars           add handlebar templating support.
+  --author=STR               specifiy the author of the project. Environment:
+                             KESSEL_AUTHOR=STR
+  --licence=STR              specifiy the licence of the project. Environment:
+                             KESSEL_LICENCE=STR
+  --private                  specifies if the application should be flagged as
+                             private. Environment: KESSEL_PRIVATE=1. Default:
+                             false
   --minimal                  create a application with a minimal footprint.
   --no-git                   no .gitignore.
 ```
@@ -62,6 +68,6 @@ Define the licence for the package.json file
 
 ## TODO
 
-Things that I might want to add later:
+Things that I would like to add later:
 
 - CSS pre-processor

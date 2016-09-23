@@ -5,13 +5,15 @@ const Hapi = require('hapi');
 const server = new Hapi.Server();
 
 const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
-const ctrl = require('./controller');
 
 // View Engine
 server.register(require('vision'),(e) => {
   server.views({
-    engines: {>view<: require('>view<')},
-    path: __dirname + '/views'
+    engines: {hbs: require('handlebars')},
+    path: __dirname + '/views',
+    layoutPath: __dirname + '/views',
+    isCached: false,
+    layout: true
   });
 });
 server.register(require('inert'),(e) => {if(e){throw e}});
@@ -34,7 +36,9 @@ server.route({
 server.route({
   method:'GET',
   path:'/',
-  handler: ctrl.index
+  handler: function(res,reply){
+    reply.view('index',{name: '>name<'});
+  }
 });
 
 server.start((e) => console.log(`Server running at: ${server.info.uri}`));

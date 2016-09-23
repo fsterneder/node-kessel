@@ -18,8 +18,7 @@ app.get('/',function(req,res,next){
 
 // http server
 app.set('port',_port_);
-
-app.listen(__port);
+app.listen(_port_);
 
 function checkValidPort(port){
   if(port < 1024 || port > 65535 || Number.isNaN(port)){

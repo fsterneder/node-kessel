@@ -10,8 +10,11 @@ const ctrl = require('./controller');
 // View Engine
 server.register(require('vision'),(e) => {
   server.views({
-    engines: {>view<: require('>view<')},
-    path: __dirname + '/views'
+    engines: {hbs: require('handlebars')},
+    path: __dirname + '/views',
+    layoutPath: __dirname + '/views',
+    isCached: false,
+    layout: true
   });
 });
 server.register(require('inert'),(e) => {if(e){throw e}});

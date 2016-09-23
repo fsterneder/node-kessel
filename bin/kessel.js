@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs'), path = require('path'), dashdash = require('dashdash')
-
 const pkg = require('../package.json'), helpr = require('../lib/helpr')
 
 const options = [
@@ -29,7 +28,6 @@ const options = [
 
 let parser = dashdash.createParser({options:options})
 
-const printHelp = helpr.printHelp.bind(null,parser), readTemplate = helpr.readTemplate, mkdir = helpr.mkdir
   
 // parses the options and looks for possible bad input
 try{
@@ -38,6 +36,9 @@ try{
   console.log('ERROR %s', e)
   printHelp()
 }
+
+// bindings for various functions
+const printHelp = helpr.printHelp.bind(null,parser), readTemplate = helpr.readTemplate, mkdir = helpr.mkdir, writeTemplate = helpr.writeTemplate.bind(null,opts.verbose)
 
 // *** start ***
 if(!opts.help && !opts.version){
@@ -67,8 +68,6 @@ function buildTemplate(userPath){
     var dirName = path.parse(userPath).name
   }
 
-  // verbose settings for writeTemplate Function
-  const writeTemplate = helpr.writeTemplate.bind(null,opts.verbose)
 
   // package.json - diff: script start, depend
   var pkg = { name: dirName, version: '0.0.0'}
@@ -122,16 +121,19 @@ function buildTemplate(userPath){
     let ejsIndex = readTemplate('ejs/index.ejs')
     writeTemplate(userPath,'views/index.ejs', ejsIndex)
   } else if(opts.hbs){
+    let hbsLayout = readTemplate('hbs/layout.hbs')
     if(opts.express){
+      hbsLayout = hbsLayout.replace(/>layout</g,'body')
       pkg.dependencies['hbs'] = "^4.0.1"
       appjs = appjs.replace(/>view</g,'hbs')
-      let hbsIndex = readTemplate('hbs/index.hbs')
-      let hbsLayout = readTemplate('hbs/layout.hbs')
-      writeTemplate(userPath,'views/index.hbs', hbsIndex)
-      writeTemplate(userPath,'views/layout.hbs', hbsLayout)
     } else {
-      throw new Error('not possible')
+      hbsLayout = hbsLayout.replace(/>layout</g,'content')
+      pkg.dependencies['handlebars'] = "^4.0.5"
+      opts.minimal ? appjs = readTemplate('hapi/min-hbs.js') : appjs = readTemplate('hapi/app-hbs.js')
     }
+    let hbsIndex = readTemplate('hbs/index.hbs')
+    writeTemplate(userPath,'views/index.hbs', hbsIndex)
+    writeTemplate(userPath,'views/layout.hbs', hbsLayout)
   } else {
     pkg.dependencies['pug'] = '^2.0.0-beta4'
     appjs = appjs.replace(/>view</g,'pug')
