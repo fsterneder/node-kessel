@@ -10,12 +10,12 @@ server.connection({port: _port_});
 
 // Hapi Plugins
 server.register( [require('vision'), require('inert')],
-  (e) => {if(e){ throw e; }
+  (e) => { if(e){ throw e; }
 
 	// View Engine
 	server.views({
 		engines: { >view<: require('>view<') },
-		path: __dirname + '/views'
+		path: __dirname + '/views'>spec<
 	});
 
 	// Routes

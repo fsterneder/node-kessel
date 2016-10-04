@@ -72,7 +72,6 @@ function buildTemplate(userPath){
   if(opts.licence){pkg.licence = opts.licence}
   if(opts.private){pkg.private = true}
 
-  // read template files
   if(opts.minimal){
     if(opts.express){
 
@@ -117,7 +116,6 @@ function buildTemplate(userPath){
 
   let cssf = readTemplate('main.css')
 
-  // make dirs
   mkdir(userPath,'public')
   mkdir(userPath,'public/css')
   mkdir(userPath,'views')
@@ -126,12 +124,14 @@ function buildTemplate(userPath){
 
     pkg.dependencies['ejs'] = "^2.5.1"
     appjs = appjs.replace(/>view</g,'ejs')
+    opts.hapi ? appjs = appjs.replace(/>spec</g,'') : null
     let ejsIndex = readTemplate('ejs/index.ejs')
     writeTemplate(userPath,'views/index.ejs', ejsIndex)
 
   } else if(opts.hbs){
 
     let hbsLayout = readTemplate('hbs/layout.hbs')
+
     if(opts.express){
 
       hbsLayout = hbsLayout.replace(/>layout</g,'body')
@@ -142,7 +142,9 @@ function buildTemplate(userPath){
 
       hbsLayout = hbsLayout.replace(/>layout</g,'content')
       pkg.dependencies['handlebars'] = "^4.0.5"
-      opts.minimal ? appjs = readTemplate('hapi/min-hbs.js') : appjs = readTemplate('hapi/app-hbs.js')
+      appjs = appjs.replace(/>view</,'hbs')
+      appjs = appjs.replace(/>view</,'handlebars')
+      appjs = appjs.replace(/>spec</g,',\n\t\tlayout: true')
 
     }
 
@@ -154,6 +156,7 @@ function buildTemplate(userPath){
     
     pkg.dependencies['pug'] = '^2.0.0-beta4'
     appjs = appjs.replace(/>view</g,'pug')
+    opts.hapi ? appjs = appjs.replace(/>spec</g,'') : null
     let pugIndex = readTemplate('pug/index.pug')
     let pugLayout = readTemplate('pug/layout.pug')
 
@@ -171,7 +174,6 @@ function buildTemplate(userPath){
     else {writeTemplate(userPath,'/'+dirName+'.js',appjs)}
   }
 
-  //copy files
   writeTemplate(userPath,'package.json',JSON.stringify(pkg, null, 2) + '\n')
   writeTemplate(userPath,'/public/css/main.css',cssf)
   

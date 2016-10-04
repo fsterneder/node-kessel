@@ -15,7 +15,7 @@ server.register( [require('vision'), require('inert')],
 	// View Engine
 	server.views({
 		engines: { >view<: require('>view<') },
-		path: __dirname + '/views'
+		path: __dirname + '/views'>spec<
 	});
 
   // Public static directory serving
