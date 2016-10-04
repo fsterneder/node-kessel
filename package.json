@@ -1,7 +1,7 @@
 {
   "name": "kessel",
   "description": "Express/Hapi template generator",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "scripts": {},
   "author": "Florian Sterneder <florian@sterneder.net> (http://sterneder.net)",
   "license": "MIT",

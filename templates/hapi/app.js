@@ -4,26 +4,29 @@
 const Hapi = require('hapi');
 const server = new Hapi.Server();
 
-const _port_ = checkValidPort(Number.parseInt(require('process').argv.splice(2)[0])) || 3000
+const _port_ = checkValidPort( Number.parseInt(require('process').argv.splice(2)[0]) ) || 3000
 
 server.connection({port: _port_});
 
-// Static Serving
-server.register(require('inert'),(e) => {if(e){throw e;}})
+// Hapi Plugins
+server.register( [require('vision'), require('inert')],
+  (e) => {if(e){ throw e; }
 
-server.register(require('vision'),(e) => {
 	// View Engine
 	server.views({
-		engines: {>view<: require('>view<')},
+		engines: { >view<: require('>view<') },
 		path: __dirname + '/views'
 	});
+
 	// Routes
 	server.route(require('./routes'));
+
 	// Server start
 	server.start((e) => {
 		if (e) {throw e;}
-		console.log('Started server at', server.info.uri);
+		console.log( 'Started server at', server.info.uri );
 	});
+
 });
 
 // Valid Port Check

@@ -1,5 +1,5 @@
 module.exports = {
-	index: function(req,reply){
+	index: function(request,reply){
 		reply.view('index',{name: '>name<'});
 	}
 }

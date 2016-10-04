@@ -1,18 +1,18 @@
 const ctrl = require('./controller')
 
 module.exports = [
-	{
+  {
 		method: 'GET',
-		path: '/',
-		handler: ctrl.index
-	},{
-		method: 'GET',
-		path: '/{p*}',
+		path: '/{param*}',
 		handler: {
 			directory: {
 				path: __dirname + '/public',
 				listing: false
 			}
 		}
+	},{
+		method: 'GET',
+		path: '/',
+		handler: ctrl.index
 	}
 ];

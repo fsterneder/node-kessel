@@ -52,7 +52,7 @@ if(!opts.help && !opts.version){
 else {
   if(opts.version && !opts.help){
     console.log(pkg.version)
-  } else {printHelp()}
+  } else { printHelp() }
 }
 
 // Main function
@@ -62,15 +62,12 @@ function main(userPath){
 
 // copys files and create dirs
 function buildTemplate(userPath){
-  if(opts.name){
-    var dirName = (opts.name).toString()
-  } else {
-    var dirName = path.parse(userPath).name
-  }
-
+  if(opts.name){ var dirName = (opts.name).toString() }
+  else { var dirName = path.parse(userPath).name }
 
   // package.json - diff: script start, depend
   var pkg = { name: dirName, version: '0.0.0'}
+
   if(opts.author){pkg.author = opts.author}
   if(opts.licence){pkg.licence = opts.licence}
   if(opts.private){pkg.private = true}
@@ -78,15 +75,20 @@ function buildTemplate(userPath){
   // read template files
   if(opts.minimal){
     if(opts.express){
+
       var appjs = readTemplate('/expr/min.js')
       pkg.dependencies = {'express':'^4.14.0'}
+
     } else {
+
       var appjs = readTemplate('/hapi/min.js')
       pkg.dependencies = {'hapi':'^15.0.3','vision':'^4.1.0','inert':'^4.0.2'}
+
     }
     pkg.scripts = {'start': 'node '+dirName+'.js'}
   } else {
     if(opts.express){
+
       var appjs = readTemplate('/expr/app.js')
       var binsrv = readTemplate('/expr/binsrv.js')
       var ctrljs = readTemplate('/expr/controller.js')
@@ -97,7 +99,9 @@ function buildTemplate(userPath){
       ctrljs = ctrljs.replace(/>name</g, dirName)
       writeTemplate(userPath,'/bin/'+dirName, binsrv)
       writeTemplate(userPath,'controller.js', ctrljs)
+
     } else {
+
       var appjs = readTemplate('/hapi/app.js')
       var ctrljs = readTemplate('/hapi/controller.js')
       var routesjs = readTemplate('/hapi/routes.js')
@@ -107,6 +111,7 @@ function buildTemplate(userPath){
       ctrljs = ctrljs.replace(/>name</g,dirName)
       writeTemplate(userPath,'controller.js',ctrljs)
       writeTemplate(userPath,'routes.js',routesjs)
+
     }
   }
 
@@ -118,32 +123,44 @@ function buildTemplate(userPath){
   mkdir(userPath,'views')
   
   if(opts.ejs){
+
     pkg.dependencies['ejs'] = "^2.5.1"
     appjs = appjs.replace(/>view</g,'ejs')
     let ejsIndex = readTemplate('ejs/index.ejs')
     writeTemplate(userPath,'views/index.ejs', ejsIndex)
+
   } else if(opts.hbs){
+
     let hbsLayout = readTemplate('hbs/layout.hbs')
     if(opts.express){
+
       hbsLayout = hbsLayout.replace(/>layout</g,'body')
       pkg.dependencies['hbs'] = "^4.0.1"
       appjs = appjs.replace(/>view</g,'hbs')
+
     } else {
+
       hbsLayout = hbsLayout.replace(/>layout</g,'content')
       pkg.dependencies['handlebars'] = "^4.0.5"
       opts.minimal ? appjs = readTemplate('hapi/min-hbs.js') : appjs = readTemplate('hapi/app-hbs.js')
+
     }
+
     let hbsIndex = readTemplate('hbs/index.hbs')
     writeTemplate(userPath,'views/index.hbs', hbsIndex)
     writeTemplate(userPath,'views/layout.hbs', hbsLayout)
+
   } else {
+    
     pkg.dependencies['pug'] = '^2.0.0-beta4'
     appjs = appjs.replace(/>view</g,'pug')
     let pugIndex = readTemplate('pug/index.pug')
     let pugLayout = readTemplate('pug/layout.pug')
+
     pugLayout = pugLayout.replace(/>title</,dirName)
     writeTemplate(userPath,'views/index.pug',pugIndex)
     writeTemplate(userPath,'views/layout.pug',pugLayout)
+
   }
   
   if(opts.minimal){
