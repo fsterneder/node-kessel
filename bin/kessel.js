@@ -30,7 +30,7 @@ let parser = dashdash.createParser({options:options})
 
   
 // parses the options and looks for possible bad input
-try{
+try {
   var opts = parser.parse(process.argv);
 } catch(e){
   console.log('ERROR %s', e)
