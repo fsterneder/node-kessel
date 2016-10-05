@@ -178,7 +178,7 @@ function buildTemplate(userPath){
     writeTemplate(userPath, dirName + '.js', appjs)
   } else {
 		opts.semicolon ? appjs = appjs.replace(/;/gm,'') : null
-    if(opts.express){ writeTemplate(userPath,'app.js',appjs) }
+    if(opts.express){ writeTemplate(userPath, dirName + '.js',appjs) }
 		else { writeTemplate(userPath,'/'+dirName+'.js',appjs) }
   }
 
