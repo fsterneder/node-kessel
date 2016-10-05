@@ -4,26 +4,27 @@ const fs = require('fs'), path = require('path'), dashdash = require('dashdash')
 const pkg = require('../package.json'), helpr = require('../lib/helpr')
 
 const options = [
-  { names:['help','h'], type:'bool', help:'print the usage and exits' },
-  { names:['version','V'], type:'bool', help:'print the version and exits' },
-  { names:['verbose','v'], type:'bool', help:'explain what is being done' },
-
-  { names:['directory','d'], type:'string', help:'define the target directory', helpArg: 'PATH' },
-  { names:['name','n'], type:'string', help:'define the name of the application', helpArg: 'STR' },
-
   { names:["express",'E'], type:'bool', help:'Express framework'},
   { names:["hapi",'H'], type:'bool', help:'Hapi.js framework', default: true},
+  { name:'minimal', type:'bool', help:'create a application with a minimal footprint' },
 
   { names:['pug','p'], type:'bool', help:'add Pug (Jade) templating support', default: true },
   { names:['hbs'], type:'bool', help:'add Handlebars templating support'},
   { names:['ejs','e'], type:'bool', help:'add Embedded JavaScript templating support' },
 
+  { names:['directory','d'], type:'string', help:'define the target directory', helpArg: 'PATH' },
+  { names:['name','n'], type:'string', help:'define the name of the application', helpArg: 'STR' },
+  { names:["semicolon","s"], type:'bool', help:'semicolon-less code style'},
+
   { name:'author', type:'string', env: 'KESSEL_AUTHOR', help:'specifiy the author of the project', helpArg: 'STR'},
   { name:'licence', type:'string', env: 'KESSEL_LICENCE', help:'specifiy the licence of the project', helpArg: 'STR'},
   { name:'private', type:'bool', env: 'KESSEL_PRIVATE', help:'specifies if the application should be flagged as private', default: false},
 
-  { name:'minimal', type:'bool', help:'create a application with a minimal footprint' },
-  { name:"no-git", type:'bool', help:'no .gitignore'}
+  { name:"no-git", type:'bool', help:'no .gitignore'},
+
+  { names:['help','h'], type:'bool', help:'print the usage and exits' },
+  { names:['version','V'], type:'bool', help:'print the version and exits' },
+  { names:['verbose','v'], type:'bool', help:'explain what is being done' }
 ]
 
 let parser = dashdash.createParser({options:options})
@@ -65,7 +66,7 @@ function buildTemplate(userPath){
   if(opts.name){ var dirName = (opts.name).toString() }
   else { var dirName = path.parse(userPath).name }
 
-  // package.json - diff: script start, depend
+  // package.json - diff: script start,ed
   var pkg = { name: dirName, version: '0.0.0'}
 
   if(opts.author){pkg.author = opts.author}
@@ -96,6 +97,9 @@ function buildTemplate(userPath){
 
       mkdir(userPath,'bin')
       ctrljs = ctrljs.replace(/>name</g, dirName)
+			debugger
+			opts.semicolon ? binsrv = binsrv.replace(/;/gm,'') : null
+			opts.semicolon ? ctrljs = ctrljs.replace(/;/gm,'') : null
       writeTemplate(userPath,'/bin/'+dirName, binsrv)
       writeTemplate(userPath,'controller.js', ctrljs)
 
@@ -108,6 +112,8 @@ function buildTemplate(userPath){
       pkg.dependencies = {'hapi':'^15.0.3','vision':'^4.1.0','inert':'^4.0.2'}
 
       ctrljs = ctrljs.replace(/>name</g,dirName)
+			opts.semicolon ? ctrljs = ctrljs.replace(/;/gm,'') : null
+			opts.semicolon ? routejs = routesjs.replace(/;/gm,'') : null
       writeTemplate(userPath,'controller.js',ctrljs)
       writeTemplate(userPath,'routes.js',routesjs)
 
@@ -168,10 +174,12 @@ function buildTemplate(userPath){
   
   if(opts.minimal){
     appjs = appjs.replace(/>name</g,dirName)
+		opts.semicolon ? appjs = appjs.replace(/;/gm,'') : null
     writeTemplate(userPath, dirName + '.js', appjs)
   } else {
-    if(opts.express){writeTemplate(userPath,'app.js',appjs)}
-    else {writeTemplate(userPath,'/'+dirName+'.js',appjs)}
+		opts.semicolon ? appjs = appjs.replace(/;/gm,'') : null
+    if(opts.express){ writeTemplate(userPath,'app.js',appjs) }
+		else { writeTemplate(userPath,'/'+dirName+'.js',appjs) }
   }
 
   writeTemplate(userPath,'package.json',JSON.stringify(pkg, null, 2) + '\n')

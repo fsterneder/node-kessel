@@ -34,7 +34,7 @@ server.register( [require('vision'), require('inert')],
   server.route({
     method:'GET',
     path:'/',
-    handler: function(res,reply){
+    handler: function(request,reply){
       reply.view('index',{name: '>name<'});
     }
   });
