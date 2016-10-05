@@ -1,4 +1,4 @@
-A application/boilerplate generator for Express.js and Hapi.js which was inspired by [express-generator](https://github.com/expressjs/generator)
+A application/boilerplate generator for Express.js and Hapi.js, inspired by [express-generator](https://github.com/expressjs/generator)
 
 ## Install
 
@@ -31,16 +31,18 @@ $ npm start -- 4004
 This generator can also be further configured with the following command line flags.
 
 ```sh
-  -h, --help                 print the usage and exits.
-  -V, --version              print the version and exits.
-  -v, --verbose              explain what is being done.
-  -d PATH, --directory=PATH  define the target directory.
-  -n STR, --name=STR         define the name of the application.
   -E, --express              Express framework.
   -H, --hapi                 Hapi.js framework. Default: true
+  --minimal                  create a application with a minimal footprint.
+
   -p, --pug                  add Pug (Jade) templating support. Default: true
   --hbs                      add Handlebars templating support.
   -e, --ejs                  add Embedded JavaScript templating support.
+
+  -d PATH, --directory=PATH  define the target directory.
+  -n STR, --name=STR         define the name of the application.
+  -s, --semicolon            semicolon-less code style.
+
   --author=STR               specifiy the author of the project. Environment:
                              KESSEL_AUTHOR=STR
   --licence=STR              specifiy the licence of the project. Environment:
@@ -48,8 +50,11 @@ This generator can also be further configured with the following command line fl
   --private                  specifies if the application should be flagged as
                              private. Environment: KESSEL_PRIVATE=1. Default:
                              false
-  --minimal                  create a application with a minimal footprint.
   --no-git                   no .gitignore.
+
+  -h, --help                 print the usage and exits.
+  -V, --version              print the version and exits.
+  -v, --verbose              explain what is being done.
 ```
 
 ## Environment Variables
@@ -71,6 +76,6 @@ Define the licence for the package.json file
 
 ## TODO
 
-Things that I would like to add later:
+Things that I would like to add at some point:
 
-- CSS pre-processor
+- CSS pre-processor options
